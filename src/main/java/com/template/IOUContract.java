@@ -1,5 +1,6 @@
 package com.template;
 
+import com.google.common.collect.ImmutableList;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
 import net.corda.core.transactions.LedgerTransaction;
@@ -39,9 +40,9 @@ public class IOUContract implements Contract {
 
             // Constraints on the signers.
             final List<PublicKey> signers = command.getSigners();
-            check.using("There must only be one signer.", signers.size() == 1);
-            check.using("The signer must be the lender.", signers.contains(lender.getOwningKey()));
-
+            check.using("There must be two signers.", signers.size() == 2);
+            check.using("The borrower and lender must be signers.", signers.containsAll(
+                    ImmutableList.of(borrower.getOwningKey(), lender.getOwningKey())));
             return null;
         });
     }
